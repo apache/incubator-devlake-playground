@@ -24,7 +24,7 @@ This playground contains a basic set-up to interact with the data using [Jupyter
 # How to play
 
 ## Prerequisites
-- [Python >= 3.11](https://www.python.org/downloads/)
+- [Python >= 3.12](https://www.python.org/downloads/)
 - [Poetry](https://python-poetry.org/docs/#installation)
 - Access to a DevLake database
 - A place to run a Jupyter Notebook (e.g. [VS Code](https://code.visualstudio.com/))
