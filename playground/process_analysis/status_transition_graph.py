@@ -13,8 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from datetime import timedelta
 from dataclasses import dataclass
+from datetime import timedelta
 
 import networkx as nx
 import pandas as pd
@@ -23,6 +23,7 @@ from sqlalchemy.engine import Engine
 from playground.process_analysis.issue_filter import IssueFilter
 
 
+# pylint: disable=too-many-instance-attributes
 @dataclass(frozen=True)
 class StatusChange:
     issue_key: str
@@ -74,12 +75,13 @@ class StatusTransitionGraph:
         edge_to = status_change.original_to_value
         if self.graph.has_edge(edge_from, edge_to):
             self.graph.edges[edge_from, edge_to]["durations"].append(duration)
-            
         else:
             self.graph.add_edge(edge_from, edge_to, durations=[duration])
 
     @classmethod
-    def from_database(cls, db_engine: Engine, issue_filter: IssueFilter | None = None) -> "StatusTransitionGraph":
+    def from_database(
+        cls, db_engine: Engine, issue_filter: IssueFilter | None = None
+    ) -> "StatusTransitionGraph":
         """
         Create a StatusTransitionGraph using a connection to a DevLake database.
         """
@@ -96,7 +98,9 @@ class StatusTransitionGraph:
         return cls.from_data_frame(df, issue_filter)
 
     @classmethod
-    def from_data_frame(cls, df: pd.DataFrame, issue_filter: IssueFilter | None = None) -> "StatusTransitionGraph":
+    def from_data_frame(
+        cls, df: pd.DataFrame, issue_filter: IssueFilter | None = None
+    ) -> "StatusTransitionGraph":
         """
         Create a StatusTransitionGraph from a Pandas DataFrame.
         For advanced usage, and testing. For most use cases, use the from_database method.

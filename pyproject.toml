@@ -34,7 +34,22 @@ nbformat = "^5.9.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.1"
+black = "^24.2.0"
+isort = "^5.13.2"
+pylint = "^3.1.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pylint.main]
+fail-under = 9.0
+
+[tool.pylint.format]
+max-line-length = "120"
+
+[tool.pylint."messages control"]
+disable = ["missing-module-docstring", "missing-class-docstring", "missing-function-docstring", "too-few-public-methods"]
+
+[tool.pylint.basic]
+good-names = ["id", "df"]
