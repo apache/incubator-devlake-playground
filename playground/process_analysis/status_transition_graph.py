@@ -13,8 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from datetime import timedelta
 from dataclasses import dataclass
+from datetime import timedelta
 
 import networkx as nx
 import pandas as pd
@@ -23,6 +23,7 @@ from sqlalchemy.engine import Engine
 from playground.process_analysis.issue_filter import IssueFilter
 
 
+# pylint: disable=too-many-instance-attributes
 @dataclass(frozen=True)
 class StatusChange:
     issue_key: str
@@ -44,16 +45,12 @@ class StatusTransitionGraph:
         self.graph = nx.DiGraph()
         self.total_transition_count = 0
 
-    def add_status_change(
-        self, status_change: StatusChange, previous_status_change: StatusChange | None
-    ):
+    def add_status_change(self, status_change: StatusChange, previous_status_change: StatusChange | None):
         self.__update_nodes(status_change, previous_status_change)
         self.__update_edges(status_change, previous_status_change)
         self.total_transition_count += 1
 
-    def __update_nodes(
-        self, status_change: StatusChange, previous_status_change: StatusChange | None
-    ):
+    def __update_nodes(self, status_change: StatusChange, previous_status_change: StatusChange | None):
         from_status = status_change.original_from_value
         if not self.graph.has_node(from_status):
             self.graph.add_node(from_status, count=0, category=status_change.from_value)
@@ -66,15 +63,12 @@ class StatusTransitionGraph:
             self.graph.nodes[from_status]["count"] += 1
         self.graph.nodes[to_status]["count"] += 1
 
-    def __update_edges(
-        self, status_change: StatusChange, previous_status_change: StatusChange | None
-    ):
+    def __update_edges(self, status_change: StatusChange, previous_status_change: StatusChange | None):
         duration = _days_between(status_change, previous_status_change)
         edge_from = status_change.original_from_value
         edge_to = status_change.original_to_value
         if self.graph.has_edge(edge_from, edge_to):
             self.graph.edges[edge_from, edge_to]["durations"].append(duration)
-            
         else:
             self.graph.add_edge(edge_from, edge_to, durations=[duration])
 
@@ -123,24 +117,16 @@ class StatusTransitionGraph:
         return process_graph
 
 
-def _for_same_issue(
-    status_change: StatusChange, previous_status_change: StatusChange | None
-) -> bool:
+def _for_same_issue(status_change: StatusChange, previous_status_change: StatusChange | None) -> bool:
     if previous_status_change is None:
         return False
     return status_change.issue_key == previous_status_change.issue_key
 
 
-def _days_between(
-    status_change: StatusChange, previous_status_change: StatusChange | None
-) -> float:
+def _days_between(status_change: StatusChange, previous_status_change: StatusChange | None) -> float:
     if _for_same_issue(status_change, previous_status_change):
-        return _timedelta_between(
-            status_change.changed_date, previous_status_change.changed_date
-        ) / timedelta(days=1)
-    return _timedelta_between(
-        status_change.changed_date, status_change.created_date
-    ) / timedelta(days=1)
+        return _timedelta_between(status_change.changed_date, previous_status_change.changed_date) / timedelta(days=1)
+    return _timedelta_between(status_change.changed_date, status_change.created_date) / timedelta(days=1)
 
 
 def _timedelta_between(current: pd.Timestamp, previous: pd.Timestamp) -> timedelta:

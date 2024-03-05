@@ -13,15 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import enum
+import statistics
 from dataclasses import dataclass, field
 from itertools import groupby
 from operator import itemgetter
-import enum
 
-import statistics
 import graphviz
 
 from playground.process_analysis.status_transition_graph import StatusTransitionGraph
+
 
 class StatisticLabelConfig(enum.Enum):
     AVG = "avg"
@@ -30,6 +31,7 @@ class StatisticLabelConfig(enum.Enum):
     MIN_MAX = "min-max"
 
 
+# pylint: disable=too-many-instance-attributes
 @dataclass
 class VisualizerConfig:
     font: str = "Arial"
@@ -63,15 +65,15 @@ class StatusTransitionGraphVisualizer:
         self,
         source: StatusTransitionGraph,
         threshold: float = 1.0,
-        label_statistic: StatisticLabelConfig = StatisticLabelConfig.AVG
+        label_statistic: StatisticLabelConfig = StatisticLabelConfig.AVG,
     ) -> graphviz.Digraph:
         """
         Create a Graphviz digraph from a StatusTransitionGraph.
-        
+
         Args:
             source: The StatusTransitionGraph to visualize.
             threshold: Number between 0.0 and 1.0, defaults to 1.0 (or 100%.)
-                Exclude edges from the visualization that represent less than 
+                Exclude edges from the visualization that represent less than
                 the percentage of total status transition within the threshold.
         """
 
@@ -130,34 +132,32 @@ class StatusTransitionGraphVisualizer:
                 return ""
 
     def __category_color(self, category: str) -> str:
-        return self.config.category_fill_color.get(
-            category, self.config.fallback_fill_color
-        )
+        return self.config.category_fill_color.get(category, self.config.fallback_fill_color)
 
     def __node_label(self, name: str, count: int) -> str:
-        return f'<{name}<BR/>{self.__count_label(count)}>'
+        return f"<{name}<BR/>{self.__count_label(count)}>"
 
     def __edge_label(self, durations: list[float], label_statistic: StatisticLabelConfig) -> str:
-        stat = ''
+        stat = ""
         match label_statistic:
             case StatisticLabelConfig.AVG:
-                stat = f'{statistics.mean(durations):0.1f} days avg'
+                stat = f"{statistics.mean(durations):0.1f} days avg"
             case StatisticLabelConfig.MEDIAN:
-                stat = f'{statistics.median(durations):0.1f} days med'
+                stat = f"{statistics.median(durations):0.1f} days med"
             case StatisticLabelConfig.IQR:
                 if len(durations) >= 4:
                     quantiles = statistics.quantiles(durations, n=4)
-                    stat = f'{quantiles[0]:0.1f} - {quantiles[2]:0.1f} days IQR (25-75%)'
+                    stat = f"{quantiles[0]:0.1f} - {quantiles[2]:0.1f} days IQR (25-75%)"
             case StatisticLabelConfig.MIN_MAX:
                 if len(durations) >= 2:
-                    stat = f'{min(durations):0.1f} - {max(durations):0.1f} days min-max'
+                    stat = f"{min(durations):0.1f} - {max(durations):0.1f} days min-max"
         count = len(durations)
-        return f'<{stat}<BR/>{self.__count_label(count)}>'
+        return f"<{stat}<BR/>{self.__count_label(count)}>"
 
     def __count_label(self, count: int) -> str:
         return f'<FONT POINT-SIZE="{self.config.sub_fontsize}">({str(count)+"x"})</FONT>'
 
-    def __edge_tooltip(self, from_state:str, to_state:str, durations: list[float]) -> str:
+    def __edge_tooltip(self, from_state: str, to_state: str, durations: list[float]) -> str:
         lines = []
         lines.append(f"{from_state} ⮕ {to_state} ({len(durations)}x)")
         lines.append(f"avg: {statistics.mean(durations):0.1f} days")

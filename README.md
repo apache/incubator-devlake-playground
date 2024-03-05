@@ -58,4 +58,6 @@ In this case, it's worthwhile to contribute this notebook to the community as a 
 The same goes for utility methods with, for example, predefined Pandas data transformations offering an interesting view on the data.
 
 
+## Contributing
+
 Please check the [contributing guidelines](https://github.com/apache/incubator-devlake/blob/main/README.md#-how-to-contribute).
