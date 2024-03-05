@@ -15,8 +15,7 @@
 
 from plotly.graph_objs import Box, Figure
 
-from playground.process_analysis.status_transition_graph import \
-    StatusTransitionGraph
+from playground.process_analysis.status_transition_graph import StatusTransitionGraph
 
 
 class StatusTransitionGraphStatsPlot:
@@ -37,9 +36,7 @@ class StatusTransitionGraphStatsPlot:
             reverse=True,
         )[:max_edges]
 
-        edge_counts = list(
-            map(lambda edge: len(edge[2]["durations"]), most_common_edges_upto_max)
-        )
+        edge_counts = list(map(lambda edge: len(edge[2]["durations"]), most_common_edges_upto_max))
         lowest_edge_count = min(edge_counts, default=1)
         highest_edge_count = max(edge_counts, default=1)
 
@@ -51,9 +48,7 @@ class StatusTransitionGraphStatsPlot:
 
         for edge in edges_by_max_duration:
             durations = list(map(lambda d: round(d, 5), edge[2]["durations"]))
-            color = _color_for_edge(
-                len(durations), lowest_edge_count, highest_edge_count
-            )
+            color = _color_for_edge(len(durations), lowest_edge_count, highest_edge_count)
             fig.add_trace(
                 Box(
                     y=durations,
@@ -78,9 +73,7 @@ class StatusTransitionGraphStatsPlot:
 def _color_for_edge(edge_count: int, min_count: int, max_count: int) -> str:
     base_r, base_g, base_b = (106, 29, 87)  # dark base color
     factor = (
-        0
-        if min_count == max_count
-        else (1 - (edge_count - min_count) / (max_count - min_count)) * 0.8
+        0 if min_count == max_count else (1 - (edge_count - min_count) / (max_count - min_count)) * 0.8
     )  # 0.8 is the max brightning factor
 
     edge_r = base_r + (255 - base_r) * factor

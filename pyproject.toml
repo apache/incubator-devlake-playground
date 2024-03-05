@@ -43,7 +43,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pylint.main]
-fail-under = 9.0
+fail-under = 10.0
 
 [tool.pylint.format]
 max-line-length = "120"
@@ -53,3 +53,11 @@ disable = ["missing-module-docstring", "missing-class-docstring", "missing-funct
 
 [tool.pylint.basic]
 good-names = ["id", "df"]
+
+[tool.black]
+line-length = 120
+target-version = ['py38', 'py39', 'py310', 'py311' ]
+
+[tool.isort]
+profile = "black"
+line_length = "120"

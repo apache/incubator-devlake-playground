@@ -45,16 +45,12 @@ class StatusTransitionGraph:
         self.graph = nx.DiGraph()
         self.total_transition_count = 0
 
-    def add_status_change(
-        self, status_change: StatusChange, previous_status_change: StatusChange | None
-    ):
+    def add_status_change(self, status_change: StatusChange, previous_status_change: StatusChange | None):
         self.__update_nodes(status_change, previous_status_change)
         self.__update_edges(status_change, previous_status_change)
         self.total_transition_count += 1
 
-    def __update_nodes(
-        self, status_change: StatusChange, previous_status_change: StatusChange | None
-    ):
+    def __update_nodes(self, status_change: StatusChange, previous_status_change: StatusChange | None):
         from_status = status_change.original_from_value
         if not self.graph.has_node(from_status):
             self.graph.add_node(from_status, count=0, category=status_change.from_value)
@@ -67,9 +63,7 @@ class StatusTransitionGraph:
             self.graph.nodes[from_status]["count"] += 1
         self.graph.nodes[to_status]["count"] += 1
 
-    def __update_edges(
-        self, status_change: StatusChange, previous_status_change: StatusChange | None
-    ):
+    def __update_edges(self, status_change: StatusChange, previous_status_change: StatusChange | None):
         duration = _days_between(status_change, previous_status_change)
         edge_from = status_change.original_from_value
         edge_to = status_change.original_to_value
@@ -79,9 +73,7 @@ class StatusTransitionGraph:
             self.graph.add_edge(edge_from, edge_to, durations=[duration])
 
     @classmethod
-    def from_database(
-        cls, db_engine: Engine, issue_filter: IssueFilter | None = None
-    ) -> "StatusTransitionGraph":
+    def from_database(cls, db_engine: Engine, issue_filter: IssueFilter | None = None) -> "StatusTransitionGraph":
         """
         Create a StatusTransitionGraph using a connection to a DevLake database.
         """
@@ -98,9 +90,7 @@ class StatusTransitionGraph:
         return cls.from_data_frame(df, issue_filter)
 
     @classmethod
-    def from_data_frame(
-        cls, df: pd.DataFrame, issue_filter: IssueFilter | None = None
-    ) -> "StatusTransitionGraph":
+    def from_data_frame(cls, df: pd.DataFrame, issue_filter: IssueFilter | None = None) -> "StatusTransitionGraph":
         """
         Create a StatusTransitionGraph from a Pandas DataFrame.
         For advanced usage, and testing. For most use cases, use the from_database method.
@@ -127,24 +117,16 @@ class StatusTransitionGraph:
         return process_graph
 
 
-def _for_same_issue(
-    status_change: StatusChange, previous_status_change: StatusChange | None
-) -> bool:
+def _for_same_issue(status_change: StatusChange, previous_status_change: StatusChange | None) -> bool:
     if previous_status_change is None:
         return False
     return status_change.issue_key == previous_status_change.issue_key
 
 
-def _days_between(
-    status_change: StatusChange, previous_status_change: StatusChange | None
-) -> float:
+def _days_between(status_change: StatusChange, previous_status_change: StatusChange | None) -> float:
     if _for_same_issue(status_change, previous_status_change):
-        return _timedelta_between(
-            status_change.changed_date, previous_status_change.changed_date
-        ) / timedelta(days=1)
-    return _timedelta_between(
-        status_change.changed_date, status_change.created_date
-    ) / timedelta(days=1)
+        return _timedelta_between(status_change.changed_date, previous_status_change.changed_date) / timedelta(days=1)
+    return _timedelta_between(status_change.changed_date, status_change.created_date) / timedelta(days=1)
 
 
 def _timedelta_between(current: pd.Timestamp, previous: pd.Timestamp) -> timedelta:
