@@ -27,13 +27,15 @@ This playground contains a basic set-up to interact with the data using [Jupyter
 - [Python >= 3.12](https://www.python.org/downloads/)
 - [Poetry](https://python-poetry.org/docs/#installation)
 - Access to a DevLake database
-- A place to run a Jupyter Notebook (e.g. [VS Code](https://code.visualstudio.com/))
+- Optional: An IDE or plugin that supports running Jupyter Notebooks directly (e.g. [Visual Studio Code](https://code.visualstudio.com/))
 
 
 ## Usage
 1. Have a local clone of this repository.
 2. Run `poetry install` in the root directory.
-3. Open an example Jupyter Notebook from the `notebooks` directory in your preferred Jupyter Notebook tool.
+3. Either:
+    - navigate to the `notebooks` directory and run the jupyter server `poetry run jupyter notebook` 
+    - navigate to one of the notebook files (`.ipynb`) in the `notebooks` directory from your IDE directly
 4. Make sure the notebook uses the virtual environment created by poetry.
 5. Configure your database URL in the notebook code.
 6. Run the notebook.
@@ -53,7 +55,7 @@ Use [Pandas](https://pandas.pydata.org/) api to organize, transform, and analyze
 ## Predefined notebooks and utilities
 
 A notebook might offer a valuable perspective on the data not available within the capabilities of a Grafana dashboard.
-In this case, it's worthwhile to contribute this notebook to the community as a predefined notebook, e.g., `process_analysis.ipynb` (it depends on [graphviz](https://graphviz.org/) for its visualization.)
+In this case, it's worthwhile to contribute this notebook to the community as a predefined notebook, e.g., `process_analysis.ipynb` (it depends on [graphviz](https://graphviz.org/) for its visualization).
 
 The same goes for utility methods with, for example, predefined Pandas data transformations offering an interesting view on the data.
 
