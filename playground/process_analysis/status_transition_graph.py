@@ -98,10 +98,11 @@ class StatusTransitionGraph:
         Note: The DataFrame must have a column for each field in the StatusChange class.
         """
 
-        process_graph: StatusTransitionGraph = cls()
-
         if df.empty:
-            return process_graph
+            raise ValueError("Provided DataFrame is empty" +
+                            "no status transitions in the 'issue_changelogs' table were found.")
+
+        process_graph: StatusTransitionGraph = cls()
 
         df = df.copy().sort_values(by=["issue_key", "changed_date"], ascending=True)
 

@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import pytest
 from datetime import datetime
 
 import pandas as pd
@@ -22,10 +23,9 @@ from playground.process_analysis.status_transition_graph_vistualizer import Stat
 
 
 def test_empty_status_transition_graph():
-    result = StatusTransitionGraph.from_data_frame(pd.DataFrame([]))
-    assert result.total_transition_count == 0
-    assert result.graph.number_of_nodes() == 0
-    assert result.graph.number_of_edges() == 0
+    with pytest.raises(ValueError) as exception_info:
+        StatusTransitionGraph.from_data_frame(pd.DataFrame([]))
+    assert 'Provided DataFrame is empty' in str(exception_info.value)
 
 
 def test_create_status_transition_graph_from_data_frame():
@@ -51,7 +51,7 @@ def test_create_status_transition_graph_from_data_frame():
 
 
 def test_convert_of_empty_status_transition_graph_to_graphiz_dot():
-    result = StatusTransitionGraph.from_data_frame(pd.DataFrame([]))
+    result = StatusTransitionGraph()
     dot = StatusTransitionGraphVisualizer().visualize(result)
 
     assert dot.source.replace("\t", "") == """strict digraph "Status Transitions" {
