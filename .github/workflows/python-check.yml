@@ -17,15 +17,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
     - name: Setup Python
       uses: actions/setup-python@v4
       with:
         python-version: 3.12.1
 
-    - name: Install Poetry
-      uses: abatilo/actions-poetry@v2
-      with:
-        poetry-version: 1.8.2
+    - name: Install poetry
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
 
     - name: Cache the virtualenv
       uses: actions/cache@v4
